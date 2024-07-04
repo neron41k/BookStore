@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BooksStore.DataAccess.Repository
 {
-    public class BookRepository
+    public class BooksRepository : IBooksRepository
     {
         private readonly BookStoreDBContext _context;
 
-        public BookRepository(BookStoreDBContext context) 
+        public BooksRepository(BookStoreDBContext context)
         {
             _context = context;
         }
@@ -26,12 +26,12 @@ namespace BooksStore.DataAccess.Repository
         }
         public async Task<Guid> Create(Book book)
         {
-            var bookEntity = new BookEntity 
-            { 
-                ID = book.ID, 
-                Title = book.Title, 
-                Description = book.Description, 
-                Price = book.Price 
+            var bookEntity = new BookEntity
+            {
+                ID = book.ID,
+                Title = book.Title,
+                Description = book.Description,
+                Price = book.Price
             };
 
             await _context.Books.AddAsync(bookEntity);
@@ -51,6 +51,13 @@ namespace BooksStore.DataAccess.Repository
 
             return id;
         }
+        public async Task<Guid> Delete(Guid id)
+        {
+            await _context.Books
+                .Where(b => b.ID == id)
+                .ExecuteDeleteAsync();
 
+            return id;
+        }
     }
 }
